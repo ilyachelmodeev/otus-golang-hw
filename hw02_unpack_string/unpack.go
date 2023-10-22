@@ -2,34 +2,47 @@ package hw02unpackstring
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 	"unicode"
 )
 
 var ErrInvalidString = errors.New("invalid string")
 
-func Unpack(s string) (string, error) {
-	if _, err := strconv.Atoi(s); err == nil {
+func Unpack(stringValue string) (string, error) {
+	var buffer string
+	result := ""
+
+	for key, value := range stringValue {
+		if key == 0 {
+			if unicode.IsDigit(value) {
+				return "", ErrInvalidString
+			}
+		}
+
+		if unicode.IsLetter(value) {
+			if len(buffer) != 0 {
+				result += buffer
+				buffer = string(value)
+				continue
+			}
+			buffer += string(value)
+			continue
+		}
+
+		if unicode.IsDigit(value) {
+			if len(buffer) == 0 {
+				return "", ErrInvalidString
+			}
+			result += strings.Repeat(buffer, int(value-'0'))
+			buffer = ""
+			continue
+		}
+
 		return "", ErrInvalidString
 	}
 
-	var prev rune
-	var escaped bool
-	var b strings.Builder
-	for _, char := range s {
-		if unicode.IsDigit(char) && !escaped {
-			m := int(char - '0')
-			r := strings.Repeat(string(prev), m-1)
-			b.WriteString(r)
-		} else {
-			escaped = string(char) == "\\" && string(prev) != "\\"
-			if !escaped {
-				b.WriteRune(char)
-			}
-			prev = char
-		}
+	if len(buffer) != 0 {
+		result += buffer
 	}
-
-	return b.String(), nil
+	return result, nil
 }
