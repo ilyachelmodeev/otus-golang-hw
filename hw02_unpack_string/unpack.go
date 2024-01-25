@@ -8,41 +8,36 @@ import (
 
 var ErrInvalidString = errors.New("invalid string")
 
-func Unpack(stringValue string) (string, error) {
-	var buffer string
-	result := ""
+func Unpack(s string) (string, error) {
+	var builder strings.Builder
 
-	for key, value := range stringValue {
-		if key == 0 {
-			if unicode.IsDigit(value) {
+	runes := []rune(s)
+	i := 0
+	for i < len(runes) {
+		char := runes[i]
+
+		if unicode.IsDigit(char) {
+			return "", ErrInvalidString
+		}
+
+		if char == '\\' && i+1 < len(runes) {
+			i++
+			char = runes[i]
+			if char != '\\' && !unicode.IsDigit(char) {
 				return "", ErrInvalidString
 			}
 		}
 
-		if unicode.IsLetter(value) {
-			if len(buffer) != 0 {
-				result += buffer
-				buffer = string(value)
-				continue
-			}
-			buffer += string(value)
-			continue
+		if i+1 < len(runes) && unicode.IsDigit(runes[i+1]) {
+			i++
+			count := int(runes[i] - '0')
+			builder.WriteString(strings.Repeat(string(char), count))
+		} else {
+			builder.WriteRune(char)
 		}
 
-		if unicode.IsDigit(value) {
-			if len(buffer) == 0 {
-				return "", ErrInvalidString
-			}
-			result += strings.Repeat(buffer, int(value-'0'))
-			buffer = ""
-			continue
-		}
-
-		return "", ErrInvalidString
+		i++
 	}
 
-	if len(buffer) != 0 {
-		result += buffer
-	}
-	return result, nil
+	return builder.String(), nil
 }
