@@ -28,7 +28,7 @@ func getTokenFrequency(inp string) map[string]int32 {
 }
 
 func getWordCounts(tokenFrequency map[string]int32) []wordCountStruct {
-	var wordCounts []wordCountStruct
+	wordCounts := []wordCountStruct{}
 	for key, val := range tokenFrequency {
 		wordCounts = append(wordCounts, wordCountStruct{w: key, c: val})
 	}
