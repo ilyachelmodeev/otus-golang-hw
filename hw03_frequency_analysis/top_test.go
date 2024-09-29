@@ -43,6 +43,29 @@ var text = `Как видите, он  спускается  по  лестни�
 	посидеть у огня и послушать какую-нибудь интересную сказку.
 		В этот вечер...`
 
+var golangCoolText = `
+	Go is expressive, concise, clean, and efficient. 
+	Its concurrency mechanisms make it easy to write programs 
+	that get the most out of multicore and networked machines, 
+	while its novel type system enables flexible and modular program construction. 
+	Go compiles quickly to machine code yet has the convenience of garbage 
+	collection and the power of run-time reflection. 
+	It's a fast, statically typed, compiled language that feels like a 
+	dynamically typed, interpreted language.`
+
+var simple = `
+	a a a a a a a a
+	b b b b b b b b
+	c c c c c c c c
+	d d d d d d d d `
+
+var simpleWithDash = `
+	a a a a a a a a
+	b b b b b b b b
+	c c c c c c c c
+	d d d d d d d d 
+ 	- - - - - - - - - - `
+
 func TestTop10(t *testing.T) {
 	t.Run("no words in empty string", func(t *testing.T) {
 		require.Len(t, Top10(""), 0)
@@ -78,5 +101,42 @@ func TestTop10(t *testing.T) {
 			}
 			require.Equal(t, expected, Top10(text))
 		}
+	})
+
+	t.Run("simple positive", func(t *testing.T) {
+		expected := []string{
+			"a", // 8
+			"b", // 8
+			"c", // 8
+			"d", // 8
+		}
+		require.Equal(t, expected, Top10(simple))
+	})
+
+	t.Run("golang cool test", func(t *testing.T) {
+		expected := []string{
+			"and",    // 4
+			"of",     // 3
+			"the",    // 3
+			"Go",     // 2
+			"a",      // 2
+			"that",   // 2
+			"to",     // 2
+			"typed,", // 2
+			"It's",   // 1
+			"Its",    // 1
+		}
+		require.Equal(t, expected, Top10(golangCoolText))
+	})
+
+	t.Run("simple positive with dash", func(t *testing.T) {
+		expected := []string{
+			"-", // 10
+			"a", // 8
+			"b", // 8
+			"c", // 8
+			"d", // 8
+		}
+		require.Equal(t, expected, Top10(simpleWithDash))
 	})
 }
