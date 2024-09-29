@@ -38,7 +38,7 @@ func Run(tasks []Task, n, m int) error {
 
 	mut := &sync.Mutex{}
 	wg := &sync.WaitGroup{}
-	wg.Add(n) // no more than n tasks
+	wg.Add(n)
 
 	in := make(chan Task, len(tasks))
 	for i := 0; i < len(tasks); i++ {
