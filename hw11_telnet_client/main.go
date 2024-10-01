@@ -13,8 +13,10 @@ import (
 
 var timeout time.Duration
 
-const minArgsCount = 3
-const defaultTimeout = 10
+const (
+	minArgsCount   = 3
+	defaultTimeout = 10
+)
 
 func init() {
 	flag.DurationVar(&timeout, "timeout", defaultTimeout*time.Second, "connection timeout")
